@@ -23,4 +23,15 @@ rpc:            db files
 
 netgroup:       nis" > /etc/nsswitch.conf
 
+
+sudo echo "#
+password        [success=2 default=ignore]      pam_unix.so obscure yescrypt
+password        [success=1 user_unknown=ignore default=die]     pam_ldap.so try_first_pass
+password        requisite                       pam_deny.so
+password        required                        pam_permit.so" > /etc/pam.d/common-password
+
+sudo echo "session optional pam_mkhomedir.so skel=/etc/skel umask=077" >> /etc/pam.d/common-session
+
+sudo echo "%admins ALL=(ALL:ALL) ALL" > /etc/sudoers.d/admins
+
 sudo service nscd restart
